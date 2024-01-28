@@ -1,0 +1,39 @@
+
+  create view "postgres"."staging"."fact_stg__dbt_tmp"
+    
+    
+  as (
+    
+
+with
+
+source  as (
+
+    select * from "postgres"."at3"."fact_snapshot"
+
+
+),
+
+to_date_format as (
+    select
+        id,
+        listing_id,
+        scrape_id,
+        TO_DATE(scraped_date, 'YYYY-MM-DD') as scraped_date,
+        accommodates,
+        price,
+        number_of_reviews,
+        REVIEW_SCORES_RATING,
+        REVIEW_SCORES_ACCURACY,
+        REVIEW_SCORES_CLEANLINESS,
+        REVIEW_SCORES_CHECKIN,
+        REVIEW_SCORES_COMMUNICATION,
+        REVIEW_SCORES_VALUE,
+        TO_DATE(dbt_updated_at, 'YYYY-MM-DD') as dbt_updated_at,
+        TO_DATE(dbt_valid_from, 'YYYY-MM-DD') as dbt_valid_from,
+        dbt_valid_to
+    from source
+)
+
+select * from to_date_format
+  );
